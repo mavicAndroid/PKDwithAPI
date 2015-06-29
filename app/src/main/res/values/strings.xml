@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ПКД</string>
+    <string name="queue_name">Запись в очередь: </string>
+</resources>
