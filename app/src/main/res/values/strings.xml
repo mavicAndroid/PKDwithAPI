@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">ПКД</string>
-    <string name="queue_name">Запись в очередь: </string>
+    <string name="queue_name"></string>
+    <string name="seven">8</string>
+    <string name="simple_ime">Pkd keyboard</string>
+    <string name="subtype_en_US">Phone number</string>
+    <string name="hint"><font size="60">введите номер телефона</font></string>>
 </resources>
