@@ -40,8 +40,8 @@ public class MainActivity extends Activity {
 
     public String resultJson = null;
     //id организации и подразделения
-    public final String orgid = "2";
-    public final String depid = "3";
+    public final String orgid = "1";
+    public final String depid = "1";
     View mDecorView;
     //для запроса queues
     JSONArray queues = null;
