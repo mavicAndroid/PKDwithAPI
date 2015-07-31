@@ -40,8 +40,8 @@ public class MainActivity extends Activity {
 
     public String resultJson = null;
     //id организации и подразделения
-    public final String orgid = "1";
-    public final String depid = "1";
+    public final String orgid = "2";
+    public final String depid = "3";
     View mDecorView;
     //для запроса queues
     JSONArray queues = null;
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 
-        android.provider.Settings.System.putInt(getBaseContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 255);
+        //android.provider.Settings.System.putInt(getBaseContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 255);
         //this.getWindow().getAttributes().screenBrightness = 100/ 100.0f;
         /*WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = 100/ 100.0f;
