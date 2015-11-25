@@ -263,6 +263,8 @@ private TextWatcher mTextWatcher = new TextWatcher() {
             HttpResponse response = client.execute(post);
 
             int status = response.getStatusLine().getStatusCode();
+            if (status!=200){Intent myIntent3 = new Intent(PhoneInput.this, noconnection.class);
+                PhoneInput.this.startActivity(myIntent3);}
 
             String responseBody = EntityUtils.toString(response.getEntity());
 
@@ -278,7 +280,9 @@ private TextWatcher mTextWatcher = new TextWatcher() {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            Intent myIntent3 = new Intent(PhoneInput.this, noconnection.class);
+            PhoneInput.this.startActivity(myIntent3);
+            //e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -311,6 +315,8 @@ private TextWatcher mTextWatcher = new TextWatcher() {
             HttpResponse response = client.execute(post);
 
             int status = response.getStatusLine().getStatusCode();
+
+
 
             String responseBody = EntityUtils.toString(response.getEntity());
 
@@ -388,7 +394,7 @@ private TextWatcher mTextWatcher = new TextWatcher() {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                try
+                /*try
                 {
                     String command;
                     command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
@@ -398,15 +404,19 @@ private TextWatcher mTextWatcher = new TextWatcher() {
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
-
-                Intent intent = new Intent(PhoneInput.this, Activity.class);
+                }*/
+                Intent myIntent1 = new Intent(PhoneInput.this, com.example.aleksey.pkdwithapi.Settings.class);
+                PhoneInput.this.startActivity(myIntent1);
+                /*Intent intent = new Intent(MainActivity.this, Activity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);*/
+                /*Intent restart1 = getIntent();
+                finish();
+                startActivity(restart1);*/
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                try
+                /*try
                 {
                     String command;
                     command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
@@ -416,15 +426,19 @@ private TextWatcher mTextWatcher = new TextWatcher() {
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
-
-                Intent intent1 = new Intent(PhoneInput.this, Activity.class);
+                }*/
+                Intent myIntent2 = new Intent(PhoneInput.this, com.example.aleksey.pkdwithapi.Settings.class);
+                PhoneInput.this.startActivity(myIntent2);
+                /*Intent intent1 = new Intent(MainActivity.this, Activity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);*/
+
                 return true;
+
         }
         return super.onKeyDown(keyCode, event);
+
     }
 
     View.OnLongClickListener mOnLOngClickListener = new View.OnLongClickListener(){

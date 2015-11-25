@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -40,9 +41,13 @@ public class MainActivity extends Activity {
 
     public String resultJson = null;
     //id организации и подразделения
-    public final String orgid = "1";
-    public final String depid = "1";
+    public String orgid;
+    public String depid;
+
     View mDecorView;
+
+    SharedPreferences prefs;
+    public static final String prname = "pref names";
     //для запроса queues
     JSONArray queues = null;
     ArrayList<HashMap<String, String>> queueList;
@@ -67,13 +72,9 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 
-        //android.provider.Settings.System.putInt(getBaseContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 255);
-        //this.getWindow().getAttributes().screenBrightness = 100/ 100.0f;
-        /*WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = 100/ 100.0f;
-        getWindow().setAttributes(lp);*/
-
         setContentView(R.layout.activity_main);
+
+
         getActionBar().hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //делаем запрос на сервер, чтобы узнать количество кнопок
@@ -85,48 +86,63 @@ public class MainActivity extends Activity {
         AlertDialog.Builder errbuilder = new AlertDialog.Builder(MainActivity.this);
         errbuilder.setTitle("Произошла ошибка");
 
+        //if (orgid == "1" && depid == "1" ){depid="2";}
+        //Toast.makeText(this, "Orgid ="+orgid+" Depid ="+depid, Toast.LENGTH_LONG).show();
+        prefs = getSharedPreferences(prname, Context.MODE_PRIVATE);
+        depid= prefs.getString("dep", null);
+        orgid= prefs.getString("org", null);
+
+
         int r= GetQueuesList();
         if (r != 200) {//errbuilder.setMessage("response code =" + r); AlertDialog alert = errbuilder.create(); alert.show();};
-            finish();
+            Intent myIntent3 = new Intent(MainActivity.this, noconnection.class);
+            prefs = getSharedPreferences(prname, Context.MODE_PRIVATE);
+            SharedPreferences.Editor ed = prefs.edit();
+            ed.putString("code", Integer.toString(r));
+            ed.commit();
+            MainActivity.this.startActivity(myIntent3);
+
         }
+        if (r==200) {
+            //парсим ответ с сервера
+            queueList = new ArrayList<HashMap<String, String>>();
 
-        //парсим ответ с сервера
-        queueList = new ArrayList<HashMap<String, String>>();
 
+            try {
+                JSONObject jsonObject = new JSONObject(resultJson);
 
-        try {
-            JSONObject jsonObject = new JSONObject(resultJson);
+                queues = jsonObject.getJSONArray(TAG_QUEUES);
 
-            queues = jsonObject.getJSONArray(TAG_QUEUES);
+                String name;
+                for (int i = 0; i <= queues.length(); i++) {
+                    JSONObject q = queues.getJSONObject(i);
 
-            String name;
-            for (int i = 0; i <= queues.length(); i++) {
-                JSONObject q = queues.getJSONObject(i);
+                    String id = q.getString(TAG_ID);
+                    String imageUrl = q.getString(TAG_IMAGEURL);
+                    name = q.getString(TAG_NAME);
 
-                String id = q.getString(TAG_ID);
-                name = q.getString(TAG_NAME);
-                String imageUrl = q.getString(TAG_IMAGEURL);
+                    HashMap<String, String> queue = new HashMap<String, String>();
 
-                HashMap<String, String> queue = new HashMap<String, String>();
+                    queue.put(TAG_ID, id);
+                    queue.put(TAG_IMAGEURL, imageUrl);
+                    queue.put(TAG_NAME, name);
 
-                queue.put(TAG_ID, id);
-                queue.put(TAG_NAME, name);
-                queue.put(TAG_IMAGEURL, imageUrl);
-
-                queueList.add(queue);
+                    queueList.add(queue);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }catch (JSONException e)
-        {e.printStackTrace();}
 
 
-        try {
-            createButtons(queueList.size());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+            try {
+                createButtons(queueList.size());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else { Intent myIntent3 = new Intent(MainActivity.this, noconnection.class);
+            MainActivity.this.startActivity(myIntent3);}
 //HIDE TOOLBAR
         try{
             //REQUIRES ROOT
@@ -179,7 +195,7 @@ public class MainActivity extends Activity {
 
                 /////////new block
                 //пдгружаем изображения для кнопок, и применяем их
-                URL url = new URL("http://admin.queue.petrocrypt.local/queueLogos/"+queueList.get(y).get(TAG_IMAGEURL));
+                URL url = new URL("http://admin.queue.petrocrypt.local/lib/queue/"+queueList.get(y).get(TAG_IMAGEURL));
 
                 y++;
                 InputStream is = url.openConnection().getInputStream();
@@ -246,7 +262,11 @@ public class MainActivity extends Activity {
             e.printStackTrace();
             Log.e("mytag", "my message", e);
         }
-        urlConnection.disconnect();
+        finally {
+            if(urlConnection != null)
+                urlConnection.disconnect();
+        }
+
         return resp;
     }
 
@@ -275,7 +295,7 @@ public class MainActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                try
+                /*try
                 {
                     String command;
                     command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
@@ -285,15 +305,19 @@ public class MainActivity extends Activity {
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
-
-                Intent intent = new Intent(MainActivity.this, Activity.class);
+                }*/
+                Intent myIntent1 = new Intent(MainActivity.this, com.example.aleksey.pkdwithapi.Settings.class);
+                MainActivity.this.startActivity(myIntent1);
+                /*Intent intent = new Intent(MainActivity.this, Activity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);*/
+                /*Intent restart1 = getIntent();
+                finish();
+                startActivity(restart1);*/
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                try
+                /*try
                 {
                     String command;
                     command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
@@ -303,15 +327,21 @@ public class MainActivity extends Activity {
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
-
-                Intent intent1 = new Intent(MainActivity.this, Activity.class);
+                }*/
+                Intent myIntent2 = new Intent(MainActivity.this, com.example.aleksey.pkdwithapi.Settings.class);
+                MainActivity.this.startActivity(myIntent2);
+                /*Intent intent1 = new Intent(MainActivity.this, Activity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);*/
+
                 return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
 
+    }
+    /*@Override
+    protected void onResume(){
+        Toast.makeText(this, "RESTART", Toast.LENGTH_SHORT).show();
+    }*/
 }
